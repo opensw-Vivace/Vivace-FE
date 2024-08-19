@@ -28,7 +28,8 @@ const SignUp = () => {
         confirmPw: confirmPw,
       });
       console.log(response.data); // 회원가입 성공 시 응답 처리
-      // 필요한 경우 추가 로직을 여기에 작성합니다.
+      alert("회원가입이 성공적으로 완료되었습니다.");
+      router.push("/auth/login");
     } catch (error) {
       console.error("회원가입 실패:", error);
       // 회원가입 실패 시 처리 로직 작성
