@@ -21,12 +21,15 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post("https://api.devhelp.p-e.kr/signup", {
-        email: email,
-        name: name,
-        pw: pw,
-        confirmPw: confirmPw,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/signup`,
+        {
+          email: email,
+          name: name,
+          pw: pw,
+          confirmPw: confirmPw,
+        }
+      );
       console.log(response.data); // 회원가입 성공 시 응답 처리
       alert("회원가입이 성공적으로 완료되었습니다.");
       router.push("/auth/login");

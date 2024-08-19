@@ -17,10 +17,13 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("https://api.devhelp.p-e.kr/login", {
-        email: email,
-        pw: pw,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/login`,
+        {
+          email: email,
+          pw: pw,
+        }
+      );
 
       const accessToken = response.headers["authorization"];
       if (accessToken) {
