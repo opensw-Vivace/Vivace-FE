@@ -1,12 +1,15 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Cookies from "universal-cookie";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
+
+  const cookies = new Cookies();
 
   useEffect(() => {
     setIsMounted(true); // 컴포넌트가 클라이언트에서 마운트된 것을 표시
@@ -18,8 +21,16 @@ const Login = () => {
         email: email,
         pw: pw,
       });
-      console.log(response.data); // 로그인 성공 시 응답 처리
-      // 필요한 경우 추가 로직을 여기에 작성합니다.
+
+      const accessToken = response.headers["authorization"];
+      if (accessToken) {
+        cookies.set("accessToken", accessToken); // 쿠키에 accessToken 저장
+        console.log("Access Token 저장 성공:", accessToken);
+        router.push("/projects");
+      } else {
+        console.error("Access Token이 응답에 포함되지 않았습니다.");
+        alert("로그인에 실패하였습니다. 다시 시도해주세요.");
+      }
     } catch (error) {
       console.error("로그인 실패:", error);
       // 로그인 실패 시 처리 로직 작성
