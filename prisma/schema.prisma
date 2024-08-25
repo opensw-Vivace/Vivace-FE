@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js" // 옵션 추가 : js와 typescript에서 사용할 수 있는 프리즈마다
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL") //.env 파일에 있는 URL로 연결
+  directUrl         = env("DIRECT_URL")
+}
+
+model Prompt {
+  id      String  @id @default(uuid())
+  role    String
+  content String
+}
