@@ -10,6 +10,11 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState<string>("");
 
+  // 추가: 사용자 정보
+  const [name, setName] = useState<string>("민주");
+  const [role, setRole] = useState<string>("front");
+  const [step, setStep] = useState<string>("Database Optimization");
+
   const addBotMessage = (message: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -33,28 +38,18 @@ const ChatBot: React.FC = () => {
     setMessages([...messages, newUserMessage]);
 
     try {
-      const response = await axios.post(
-        "/api/chat", // Next.js API 경로
-        {
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a programmer. Please help the user to generate right codes.",
-            },
-            {
-              role: "user",
-              content: userInput,
-            },
-          ],
-        }
-      );
+      const response = await axios.post("/api/chat", {
+        name,
+        role,
+        step,
+        userInput,
+      });
 
-      const botResponse = response.data.choices[0].message.content;
+      const botResponse = response.data.message;
       addBotMessage(botResponse);
     } catch (error) {
       console.error("API 요청 오류:", error);
+      addBotMessage("There was an error processing your request.");
     }
 
     setUserInput(""); // 입력 필드 초기화
@@ -88,6 +83,7 @@ const ChatBot: React.FC = () => {
             value={userInput}
             onChange={handleInputChange}
             className="flex p-2 mr-2 w-3/4 items-start border-none"
+            placeholder="Type your message..."
           ></textarea>
           <button
             onClick={handleSubmit}
