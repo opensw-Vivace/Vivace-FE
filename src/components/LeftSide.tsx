@@ -1,6 +1,6 @@
 const LeftSide = () => {
   return (
-    <nav className="fixed top-0 left-0 h-[100vh] w-[220px] border-r border-[#465069] py-[16px]">
+    <nav className="fixed top-0 left-0 h-[100vh] w-[300px] border-r border-[#465069] py-[16px]">
       <div className="flex flex-col text-white ">
         <div className="text-[20px] px-[16px]">{`<`}</div>
         <div className="text-[28px] py-[10px] px-[16px]">Vivace Project</div>
