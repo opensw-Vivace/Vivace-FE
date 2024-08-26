@@ -7,7 +7,7 @@ const LeftSide = () => {
         <div className="flex items-center text-[28px] h-[80px] px-[16px] border-b border-[#465069] ">
           DEV-HELPER
         </div>
-        <div className="text-[20px] mt-[40px] flex gap-[10px] flex-col">
+        <div className="text-[20px] mt-[20px] flex gap-[10px] flex-col">
           <div className="py-[10px] px-[16px] w-full bg-[#132147]">
             프로젝트
           </div>
