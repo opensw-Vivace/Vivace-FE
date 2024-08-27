@@ -15,6 +15,8 @@ const Dashboard = () => {
 
   const { id } = router.query;
 
+  if (!id) return;
+
   const renderContent = () => {
     switch (activeTab) {
       case "할 일":

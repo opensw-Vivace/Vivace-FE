@@ -105,7 +105,7 @@ const Issues = ({ id }: IssuesProps) => {
     <div className="flex w-full gap-4 px-[10px]">
       <div className="w-1/3">
         <div className="flex justify-between ">
-          <h2 className="text-white font-bold mb-4 flex">시작 전</h2>
+          <h2 className="text-white font-bold mb-4 flex">새 이슈</h2>
           <button
             className="text-white bg-blue-500 rounded-full w-4 h-4 mr-[5px] flex items-center justify-center"
             onClick={() => setShowModal(true)}
@@ -116,11 +116,11 @@ const Issues = ({ id }: IssuesProps) => {
         {renderIssuesByStatus("NOT_STARTED")}
       </div>
       <div className="w-1/3">
-        <h2 className="text-white font-bold mb-4">진행 중</h2>
+        <h2 className="text-white font-bold mb-4">해결 중</h2>
         {renderIssuesByStatus("IN_PROGRESS")}
       </div>
       <div className="w-1/3">
-        <h2 className="text-white font-bold mb-4">완료</h2>
+        <h2 className="text-white font-bold mb-4">해결됨</h2>
         {renderIssuesByStatus("COMPLETED")}
       </div>
       {showModal && (
