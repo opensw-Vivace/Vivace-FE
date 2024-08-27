@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 const LeftSide = () => {
   const router = useRouter();
   return (
-    <nav className="fixed top-0 left-0 h-[100vh] w-[300px] border-r border-[#465069] py-[16px]">
+    <nav className=" h-[100vh] w-[300px] border-r border-[#465069] py-[16px]">
       <div className="flex flex-col text-white ">
         <Image
           className="w-[20px] h-[20px] ml-[16px] cursor-pointer"
