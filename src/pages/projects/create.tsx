@@ -58,15 +58,14 @@ const Index = () => {
       positionName: formData.positionName.filter((position) => position !== ""),
     };
     try {
-      const response = await fetch(
+      const response = await axios.post(
         `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/projects`,
+        sanitizedFormData, // Body data
         {
-          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: cookies.get("accessToken"),
           },
-          body: JSON.stringify(sanitizedFormData),
         }
       );
 

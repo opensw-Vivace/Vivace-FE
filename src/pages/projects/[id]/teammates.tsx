@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import CreateBar from "../../../components/projects/CreateBar";
 import Cookies from "universal-cookie";
+import axios from "axios";
 
 interface User {
   memberId: number;
@@ -23,13 +24,12 @@ const Index = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/members`,
           {
-            method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${cookies.get("accessToken")}`,
+              Authorization: cookies.get("accessToken"),
             },
           }
         );
@@ -53,23 +53,16 @@ const Index = () => {
     };
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/invitations`,
+        inviteData, // Body data
         {
-          method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${cookies.get("accessToken")}`,
+            Authorization: cookies.get("accessToken"),
           },
-          body: JSON.stringify(inviteData),
         }
       );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        return;
-      }
 
       alert(
         `${user.name}님께 초대장 발송을 완료하였습니다. 초대장을 수락할 경우, 오른쪽 화면에서 확인하실 수 있습니다.`

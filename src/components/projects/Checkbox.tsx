@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Cookies from "universal-cookie";
@@ -26,18 +27,17 @@ const Checkbox = ({
     const isChecked = event.target.checked;
     setChecked(isChecked);
 
-    const response = await fetch(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/projects/${id}/necessary`,
       {
-        method: "POST",
+        artifactTypeId: artifact.typeId,
+        necessary: isChecked,
+      },
+      {
         headers: {
           "Content-Type": "application/json",
           Authorization: `${cookies.get("accessToken")}`,
         },
-        body: JSON.stringify({
-          artifactTypeId: artifact.typeId,
-          necessary: isChecked,
-        }),
       }
     );
 
