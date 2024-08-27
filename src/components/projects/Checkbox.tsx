@@ -51,11 +51,9 @@ const Checkbox = ({
   };
 
   return (
-    <div>
-      <label>
-        <input type="checkbox" checked={checked} onChange={handleChange} />
-        {artifact.name}
-      </label>
+    <div className="flex gap-[5px] py-[5px]">
+      <input type="checkbox" checked={checked} onChange={handleChange} />
+      <div>{artifact.name}</div>
     </div>
   );
 };
