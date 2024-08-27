@@ -1,62 +1,36 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import CreateBar from "../../../components/projects/CreateBar";
-import Cookies from "universal-cookie";
+import Checkbox from "@/components/projects/Checkbox";
 
-interface User {
-  id: number;
-  email: string;
+interface Artifact {
+  name: string;
+  typeId: number;
+  category: string;
 }
 
-interface InviteData {
-  id: string[] | undefined | string;
-  receiverId: number;
-}
+const artifacts: Artifact[] = [
+  { name: "요구사항 명세서", typeId: 1, category: "기획" },
+  { name: "플로우 차트", typeId: 2, category: "기획" },
+  { name: "초안", typeId: 3, category: "디자인" },
+  { name: "최종디자인", typeId: 4, category: "디자인" },
+  { name: "ERD 생성", typeId: 5, category: "개발" },
+  { name: "API 명세서", typeId: 6, category: "개발" },
+  { name: "QA", typeId: 7, category: "QA" },
+];
 
 const Index = () => {
-  const [users, setUsers] = useState<User[]>([
-    { id: 1, email: "user1@example.com" },
-    { id: 2, email: "user2@example.com" },
-    { id: 3, email: "user3@example.com" },
-  ]);
-
   const router = useRouter();
-  const cookies = new Cookies();
+  const [selectedArtifacts, setSelectedArtifacts] = useState<Artifact[]>([]);
 
-  const availablePositions = ["front", "back", "pm", "app", "designer"];
-
-  const { id } = router.query;
-  const handleInvite = async (receiverId: number) => {
-    const inviteData: InviteData = {
-      id,
-      receiverId,
-    };
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/invitations`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${cookies.get("accessToken")}`,
-          },
-          body: JSON.stringify(inviteData),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        return;
+  const handleArtifactChange = (artifact: Artifact, checked: boolean) => {
+    setSelectedArtifacts((prev) => {
+      if (checked) {
+        return [...prev, artifact];
+      } else {
+        return prev.filter((a) => a.typeId !== artifact.typeId);
       }
-
-      const data = await response.json();
-      console.log("Success:", data);
-      // 성공적으로 초대된 경우 후속 작업 추가 가능
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    });
   };
 
   return (
@@ -65,24 +39,21 @@ const Index = () => {
       <div className="w-full h-full">
         <div className="flex h-[calc(100%-96px)] flex-row mt-[96px] border-t border-[#465069]">
           <div className="w-[300px] border-r border-[#465069]">
-            <ul className="px-[20px] mt-[20px]">
-              {users.map((user) => (
-                <li
-                  key={user.id}
-                  className="flex justify-between items-center px-2 gap-3 py-2 border-b border-gray-300"
-                >
-                  <span>{user.email}</span>
-                  <button
-                    onClick={() => handleInvite(user.id)}
-                    className="bg-blue-500 text-white px-2 py-1 text-[12px] rounded hover:bg-blue-600"
-                  >
-                    Invite
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {artifacts.map((artifact) => (
+              <Checkbox
+                key={artifact.typeId}
+                artifact={artifact}
+                onChange={handleArtifactChange}
+              />
+            ))}
           </div>
-          <div className="w-full h-full px-[16px] py-[16px] text-[18px]"></div>
+          <div className="w-full h-full px-[16px] py-[16px] text-[18px]">
+            {selectedArtifacts.map((artifact) => (
+              <div key={artifact.typeId} style={{ margin: "10px 0" }}>
+                {artifact.name}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
