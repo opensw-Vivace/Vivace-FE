@@ -115,7 +115,10 @@ const Index = () => {
                 return (
                   <div
                     key={project.project_id}
-                    className="relative w-[50%] bg-[#132147] rounded-[15px] p-[25px]"
+                    className="cursor-pointer relative w-[50%] bg-[#132147] rounded-[15px] p-[25px]"
+                    onClick={() =>
+                      router.push(`/helper/${project.project_id}/dashboard`)
+                    }
                   >
                     <h2 className="font-bold text-[30px] flex justify-between mb-[10px]">
                       {project.title}{" "}
