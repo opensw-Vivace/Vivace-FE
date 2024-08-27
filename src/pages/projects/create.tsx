@@ -78,7 +78,7 @@ const Index = () => {
 
       const data = await response.json();
       console.log("Success:", data);
-      router.push("/projects/teammates");
+      router.push(`/projects/${data.id}/teammates`);
     } catch (error) {
       console.error("Error:", error);
     }
