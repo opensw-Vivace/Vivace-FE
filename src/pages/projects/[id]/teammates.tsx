@@ -1,35 +1,55 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateBar from "../../../components/projects/CreateBar";
 import Cookies from "universal-cookie";
 
 interface User {
-  id: number;
+  memberId: number;
   email: string;
+  name: string;
 }
 
 interface InviteData {
-  id: string[] | undefined | string;
+  projectId: number;
   receiverId: number;
 }
 
 const Index = () => {
-  const [users, setUsers] = useState<User[]>([
-    { id: 1, email: "user1@example.com" },
-    { id: 2, email: "user2@example.com" },
-    { id: 3, email: "user3@example.com" },
-  ]);
+  const [users, setUsers] = useState<User[]>([]);
 
   const router = useRouter();
   const cookies = new Cookies();
 
-  const availablePositions = ["front", "back", "pm", "app", "designer"];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/members`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${cookies.get("accessToken")}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+        const data = await response.json();
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
 
+    fetchUsers();
+  }, []);
   const { id } = router.query;
-  const handleInvite = async (receiverId: number) => {
+  const handleInvite = async (user: User) => {
     const inviteData: InviteData = {
-      id,
-      receiverId,
+      projectId: id ? parseInt(id as string, 10) : 0,
+      receiverId: user.memberId,
     };
 
     try {
@@ -51,8 +71,9 @@ const Index = () => {
         return;
       }
 
-      const data = await response.json();
-      console.log("Success:", data);
+      alert(
+        `${user.name}님께 초대장 발송을 완료하였습니다. 초대장을 수락할 경우, 오른쪽 화면에서 확인하실 수 있습니다.`
+      );
       // 성공적으로 초대된 경우 후속 작업 추가 가능
     } catch (error) {
       console.error("Error:", error);
@@ -68,12 +89,15 @@ const Index = () => {
             <ul className="px-[20px] mt-[20px]">
               {users.map((user) => (
                 <li
-                  key={user.id}
+                  key={user.memberId}
                   className="flex justify-between items-center px-2 gap-3 py-2 border-b border-gray-300"
                 >
-                  <span>{user.email}</span>
+                  <span>
+                    {user.name} <br />{" "}
+                    <span className="text-[#d9d9d9]"> {user.email}</span>
+                  </span>
                   <button
-                    onClick={() => handleInvite(user.id)}
+                    onClick={() => handleInvite(user)}
                     className="bg-blue-500 text-white px-2 py-1 text-[12px] rounded hover:bg-blue-600"
                   >
                     Invite
