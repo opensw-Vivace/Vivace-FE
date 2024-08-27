@@ -15,7 +15,7 @@ const Index = () => {
             Create Project
           </div>
         </div>
-        <div className="flex flex-row h-full">
+        <div className="flex flex-row h-[calc(100%-96px)]">
           <div className="w-[400px] h-full border-r border-[#465069]"></div>
           <div></div>
         </div>

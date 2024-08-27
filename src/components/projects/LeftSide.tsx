@@ -2,7 +2,7 @@ import React from "react";
 
 const LeftSide = () => {
   return (
-    <nav className=" h-full w-[300px] border-r border-[#465069] py-[16px]">
+    <nav className=" h-[100vh] w-[300px] border-r border-[#465069] py-[16px]">
       <div className="flex flex-col text-white ">
         <div className="flex items-center text-[28px] h-[80px] px-[16px] border-b border-[#465069] ">
           DEV-HELPER
