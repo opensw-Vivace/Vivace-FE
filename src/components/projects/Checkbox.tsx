@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 
 interface Artifact {
@@ -12,11 +12,17 @@ interface Artifact {
 const Checkbox = ({
   artifact,
   onChange,
+  isChecked,
 }: {
   artifact: Artifact;
   onChange: (artifact: Artifact, checked: boolean) => void;
+  isChecked: boolean;
 }) => {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(isChecked);
+
+  useEffect(() => {
+    setChecked(isChecked);
+  }, [isChecked]);
 
   const cookies = new Cookies();
   const router = useRouter();
@@ -24,29 +30,33 @@ const Checkbox = ({
   const { id } = router.query;
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = event.target.checked;
-    setChecked(isChecked);
+    const newCheckedState = event.target.checked;
+    setChecked(newCheckedState);
 
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/projects/${id}/necessary`,
-      {
-        artifactTypeId: artifact.typeId,
-        necessary: isChecked,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${cookies.get("accessToken")}`,
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/projects/${id}/necessary`,
+        {
+          artifactTypeId: artifact.typeId,
+          necessary: newCheckedState,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${cookies.get("accessToken")}`,
+          },
+        }
+      );
 
-    if (response.ok) {
-      onChange(artifact, isChecked);
-    } else {
-      // Error handling
-      console.error("Failed to update artifact status");
-      setChecked(!isChecked); // Revert if the request fails
+      if (response) {
+        onChange(artifact, newCheckedState);
+      } else {
+        console.error("Failed to update artifact status");
+        setChecked(!newCheckedState); // Revert if the request fails
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setChecked(!newCheckedState); // Revert if the request fails
     }
   };
 

@@ -33,10 +33,14 @@ const Index = () => {
 
   const handleArtifactChange = (artifact: Artifact, checked: boolean) => {
     setSelectedArtifacts((prev) => {
-      if (checked) {
+      const exists = prev.some((a) => a.typeId === artifact.typeId);
+
+      if (checked && !exists) {
         return [...prev, artifact];
-      } else {
+      } else if (!checked && exists) {
         return prev.filter((a) => a.typeId !== artifact.typeId);
+      } else {
+        return prev;
       }
     });
   };
@@ -57,6 +61,9 @@ const Index = () => {
                     key={artifact.typeId}
                     artifact={artifact}
                     onChange={handleArtifactChange}
+                    isChecked={selectedArtifacts.some(
+                      (a) => a.typeId === artifact.typeId
+                    )}
                   />
                 ))}
               </div>
