@@ -33,10 +33,8 @@ const Index = () => {
             },
           }
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch users");
-        }
-        const data = await response.json();
+
+        const data = await response.data;
         setUsers(data);
       } catch (error) {
         console.error("Error fetching users:", error);

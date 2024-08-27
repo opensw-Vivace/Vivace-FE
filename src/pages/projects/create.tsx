@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import CreateBar from "../../components/projects/CreateBar";
 import Cookies from "universal-cookie";
+import axios from "axios";
 
 interface ProjectData {
   title: string;
@@ -69,13 +70,7 @@ const Index = () => {
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        return;
-      }
-
-      const data = await response.json();
+      const data = await response.data;
       console.log("Success:", data);
       router.push(`/projects/${data.id}/teammates`);
     } catch (error) {
