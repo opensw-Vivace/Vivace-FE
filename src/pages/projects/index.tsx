@@ -109,21 +109,21 @@ const Index = () => {
           </div>
         </div>
         <div className="flex flex-row h-[calc(100%-96px)]">
-          <div className="w-full h-full p-[20px] border-r border-[#465069]">
+          <div className="w-full h-full p-[30px] border-r border-[#465069]">
             <div className="flex gap-[30px]">
               {projects?.map((project) => {
                 return (
                   <div
                     key={project.project_id}
-                    className="relative w-[50%] bg-[#132147] rounded-[15px] p-[16px]"
+                    className="relative w-[50%] bg-[#132147] rounded-[15px] p-[25px]"
                   >
-                    <h2 className="font-bold text-[30px] flex justify-between">
+                    <h2 className="font-bold text-[30px] flex justify-between mb-[10px]">
                       {project.title}{" "}
                       <div className="text-[#FF8E8E]">
                         {calculateDaysUntilDeadline(project.deadline)}
                       </div>
                     </h2>
-                    <div className="flex gap-[10px] items-center mb-[10px]">
+                    <div className="flex gap-[10px] items-center mb-[20px]">
                       <div className="w-full bg-gray-200 rounded-full h-4">
                         <div
                           className="bg-[#7FDB70] h-4 rounded-full"
@@ -158,7 +158,7 @@ const Index = () => {
                                   key={position}
                                   style={{
                                     border: "1px solid #1B37A6",
-                                    color: "#fff",
+                                    color: "#1B37A6",
                                     padding: "2px 4px",
                                     borderRadius: "4px",
                                     fontSize: "12px",
@@ -173,7 +173,7 @@ const Index = () => {
                         </div>
                       ))}
                     </div>
-                    <p className="absolute bottom-[10px] text-[15px]">
+                    <p className="absolute bottom-[15px] text-[15px]">
                       ~ {project.deadline}
                     </p>
                     {/* <p>Status: {project.status}</p> */}
