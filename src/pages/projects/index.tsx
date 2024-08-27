@@ -14,11 +14,10 @@ interface Project {
 }
 
 interface Member {
-  email: string;
   name: string;
-  memberId: number;
+  role: string;
+  positionList: string[];
 }
-
 interface Progress {
   totalPercent: number;
   uppercent: number;
@@ -89,6 +88,14 @@ const Index = () => {
     fetchProjects();
   }, []);
 
+  const calculateDaysUntilDeadline = (deadline: string) => {
+    const currentDate = new Date();
+    const deadlineDate = new Date(deadline);
+    const diffTime = deadlineDate.getTime() - currentDate.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 밀리초에서 일수로 변환
+    return diffDays >= 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`;
+  };
+
   return (
     <div className="flex w-full text-[#ffffff]">
       <LeftSide />
@@ -108,23 +115,68 @@ const Index = () => {
                 return (
                   <div
                     key={project.project_id}
-                    className="w-[50%] bg-[#1B37A6] rounded-[15px] p-[16px]"
+                    className="relative w-[50%] bg-[#132147] rounded-[15px] p-[16px]"
                   >
-                    <h2 className="font-bold text-[30px]">{project.title}</h2>
-                    <p>{project.progress.totalPercent}</p>
-                    <p>Deadline: {project.deadline}</p>
-                    <p>Status: {project.status}</p>
-                    <p>Team: {project.team_name}</p>
-
-                    {/* Members 데이터 표시 */}
-                    <div>
-                      <h3>Team Members:</h3>
-                      <div>
-                        {project.members.map((member) => (
-                          <div key={member.memberId}>{member.name}</div>
-                        ))}
+                    <h2 className="font-bold text-[30px] flex justify-between">
+                      {project.title}{" "}
+                      <div className="text-[#FF8E8E]">
+                        {calculateDaysUntilDeadline(project.deadline)}
                       </div>
+                    </h2>
+                    <div className="flex gap-[10px] items-center mb-[10px]">
+                      <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div
+                          className="bg-[#7FDB70] h-4 rounded-full"
+                          style={{ width: `${project.progress.totalPercent}%` }}
+                        ></div>
+                      </div>
+                      <p>{project.progress.totalPercent}%</p>
                     </div>
+                    <div className="text-[20px] flex">
+                      <div className="w-[50px]">팀명 </div>
+                      <span className="text-[#ABF99E]">
+                        {project.team_name}
+                      </span>
+                    </div>
+                    <div className="flex ml-[50px] mb-[30px]">
+                      {project.members.map((member) => (
+                        <div
+                          key={member.name}
+                          className="flex items-center flex-row flex-wrap"
+                        >
+                          <div className="mr-[10px]">{member.name}</div>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "8px",
+                              marginTop: "4px",
+                            }}
+                          >
+                            {member.positionList.map((position, index) => {
+                              return (
+                                <span
+                                  key={position}
+                                  style={{
+                                    border: "1px solid #1B37A6",
+                                    color: "#fff",
+                                    padding: "2px 4px",
+                                    borderRadius: "4px",
+                                    fontSize: "12px",
+                                    flexWrap: "wrap",
+                                  }}
+                                >
+                                  {position}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="absolute bottom-[10px] text-[15px]">
+                      ~ {project.deadline}
+                    </p>
+                    {/* <p>Status: {project.status}</p> */}
                   </div>
                 );
               })}
