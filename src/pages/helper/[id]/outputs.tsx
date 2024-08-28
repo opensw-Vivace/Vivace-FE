@@ -130,7 +130,7 @@ const ProjectArtifacts = () => {
       const token = cookies.get("accessToken");
       const formData = new FormData();
       selectedImageFiles.forEach((file) => {
-        formData.append("images", file);
+        formData.append("image", file);
       });
 
       await axios.post(
@@ -183,7 +183,7 @@ const ProjectArtifacts = () => {
             <p className="text-gray-400">{artifact.deadline}</p>
           </div>
           <p className="text-gray-400">{artifact.subtitle}</p>
-          {/* <div className="flex space-x-2 mt-[10px]">
+          <div className="flex space-x-2 mt-[10px]">
             {artifact.imgPathList.map((imgPath, index) => (
               <img
                 key={index}
@@ -192,7 +192,7 @@ const ProjectArtifacts = () => {
                 className="w-16 h-16"
               />
             ))}
-          </div> */}
+          </div>
           <button
             className="mt-2 bg-green-500 text-white px-4 py-2 rounded"
             onClick={() => {
@@ -320,6 +320,7 @@ const ProjectArtifacts = () => {
           )}
         </div>
       </div>
+      
     </div>
   );
 };

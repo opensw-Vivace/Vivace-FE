@@ -100,6 +100,11 @@ const Index = () => {
           <div className="w-full h-full px-[16px] py-[16px] text-[18px]"></div>
         </div>
       </div>
+      <div
+            className="cursor-pointer fixed right-[20px] bottom-[20px] ursor-pointer bg-[#264FF9] w-[250px] py-[10px] rounded-[8px] text-[20px] text-center text-[#ffffff]"
+            onClick={() => router.push(`/projects/${id}/outputs`)}
+          >Next
+          </div>
     </div>
   );
 };

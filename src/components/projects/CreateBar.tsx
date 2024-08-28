@@ -39,7 +39,7 @@ const CreateBar = () => {
             className={`py-[10px] px-[16px] w-full cursor-pointer ${
               activeTab === "팀원 추가" ? "bg-[#132147]" : ""
             }`}
-            onClick={() => handleNavigation("팀원 추가", `/projects/${id}/teammates`)}
+      
           >
             팀원 추가
           </div>
@@ -47,7 +47,7 @@ const CreateBar = () => {
             className={`py-[10px] px-[16px] w-full cursor-pointer ${
               activeTab === "산출물 선택" ? "bg-[#132147]" : ""
             }`}
-            onClick={() => handleNavigation("산출물 선택", `/projects/${id}/outputs`)}
+            
           >
             산출물 선택
           </div>
