@@ -47,8 +47,9 @@ const ProjectArtifacts = () => {
   const [newArtifactTitle, setNewArtifactTitle] = useState("");
   const [newArtifactSubtitle, setNewArtifactSubtitle] = useState("");
   const [newArtifactDeadline, setNewArtifactDeadline] = useState("");
-  const [newImgPaths, setNewImgPaths] = useState<string[]>([]);
   const [newWriterIds, setNewWriterIds] = useState<number[]>([]);
+  const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
+  const [selectedArtifactId, setSelectedArtifactId] = useState<number | null>(null);
   const cookies = new Cookies();
 
   const router = useRouter();
@@ -105,7 +106,7 @@ const ProjectArtifacts = () => {
           deadline: newArtifactDeadline,
           projectId: Number(projectId),
           artifactTypeId: selectedTypeId,
-          imgPathList: newImgPaths,
+          imgPathList: ["placeholder.jpg"], // Placeholder or dummy image path
           writerIdList: newWriterIds,
         },
         {
@@ -117,15 +118,47 @@ const ProjectArtifacts = () => {
 
       // Close the modal and refresh data
       setShowModal(false);
-      setNewArtifactTitle("");
-      setNewArtifactSubtitle("");
-      setNewArtifactDeadline("");
-      setNewImgPaths([]);
-      setNewWriterIds([]);
+      resetForm();
       fetchArtifacts(); // Refresh data after posting the new artifact
     } catch (error) {
       console.error("Error creating artifact", error);
     }
+  };
+
+  const handleImageUpload = async (artifactId: number) => {
+    try {
+      const token = cookies.get("accessToken");
+      const formData = new FormData();
+      selectedImageFiles.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_BASE_URL}/s3/upload/${artifactId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // Refresh the artifact list after upload
+      fetchArtifacts();
+      setSelectedImageFiles([]);
+      setSelectedArtifactId(null);
+    } catch (error) {
+      console.error("Error uploading images", error);
+    }
+  };
+
+  const resetForm = () => {
+    setNewArtifactTitle("");
+    setNewArtifactSubtitle("");
+    setNewArtifactDeadline("");
+    setNewWriterIds([]);
+    setSelectedImageFiles([]);
   };
 
   const matchedArtifacts = necessaryTypes
@@ -141,9 +174,14 @@ const ProjectArtifacts = () => {
     return existingArtifacts
       .filter((artifact) => artifact.artifactTypeId === artifactTypeId)
       .map((artifact) => (
-        <div key={artifact.id} className="bg-gray-800 p-4 rounded-lg mb-4 w-full">
-          <div className="flex justify-between mb-[10px]"><h3 className="text-white font-bold">{artifact.title}</h3>
-          <p className="text-gray-400">{artifact.deadline}</p></div>
+        <div
+          key={artifact.id}
+          className="bg-gray-800 p-4 rounded-lg mb-4 w-full"
+        >
+          <div className="flex justify-between mb-[10px]">
+            <h3 className="text-white font-bold">{artifact.title}</h3>
+            <p className="text-gray-400">{artifact.deadline}</p>
+          </div>
           <p className="text-gray-400">{artifact.subtitle}</p>
           <div className="flex space-x-2 mt-[10px]">
             {artifact.imgPathList.map((imgPath, index) => (
@@ -155,6 +193,15 @@ const ProjectArtifacts = () => {
               />
             ))}
           </div>
+          <button
+            className="mt-2 bg-green-500 text-white px-4 py-2 rounded"
+            onClick={() => {
+              setSelectedArtifactId(artifact.id);
+              setShowModal(true);
+            }}
+          >
+            이미지 업로드
+          </button>
         </div>
       ));
   };
@@ -164,87 +211,116 @@ const ProjectArtifacts = () => {
       <LeftSide />
       <div className="flex flex-col w-full text-[#ffffff]">
         <TopBar />
-    <div className="flex flex-col w-full gap-4 px-[30px]">
-      {matchedArtifacts.map((artifact) => (
-        <div
-          key={artifact?.typeId}
-          className="flex justify-between gap-[50px] items-center"
-        >
-          <div className="w-full">
-            <h3 className="text-white font-bold mb-[10px]">
-              {artifact?.name} ({artifact?.typeName})
-            </h3>
-            {renderArtifacts(artifact?.typeId!)}
-          </div>
-          <button
-            className="text-white bg-blue-500 rounded-full w-8 h-8 flex items-center justify-center"
-            onClick={() => {
-              setSelectedTypeId(artifact?.typeId!);
-              setShowModal(true);
-            }}
-          >
-            +
-          </button>
-        </div>
-      ))}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg">
-            <h2 className="text-2xl mb-4">새 아티팩트 생성</h2>
-            <input
-              type="text"
-              placeholder="제목"
-              value={newArtifactTitle}
-              onChange={(e) => setNewArtifactTitle(e.target.value)}
-              className="w-full p-2 mb-4 border rounded text-[#000000]"
-            />
-            <input
-              type="text"
-              placeholder="부제목"
-              value={newArtifactSubtitle}
-              onChange={(e) => setNewArtifactSubtitle(e.target.value)}
-              className="w-full p-2 mb-4 border rounded text-[#000000]"
-            />
-            <input
-              type="date"
-              placeholder="마감일"
-              value={newArtifactDeadline}
-              onChange={(e) => setNewArtifactDeadline(e.target.value)}
-              className="w-full p-2 mb-4 border rounded text-[#000000]"
-            />
-            <textarea
-              placeholder="이미지 경로들 (쉼표로 구분)"
-              value={newImgPaths.join(",")}
-              onChange={(e) => setNewImgPaths(e.target.value.split(","))}
-              className="w-full p-2 mb-4 border rounded text-[#000000]"
-            ></textarea>
-            <textarea
-              placeholder="작성자 ID들 (쉼표로 구분)"
-              value={newWriterIds.join(",")}
-              onChange={(e) =>
-                setNewWriterIds(e.target.value.split(",").map(Number))
-              }
-              className="w-full p-2 mb-4 border rounded text-[#000000]"
-            ></textarea>
-            <div className="flex justify-end space-x-4">
+        <div className="flex flex-col w-full gap-4 px-[30px]">
+          {matchedArtifacts.map((artifact) => (
+            <div
+              key={artifact?.typeId}
+              className="flex justify-between gap-[50px] items-center"
+            >
+              <div className="w-full">
+                <h3 className="text-white font-bold mb-[10px]">
+                 [{artifact?.category}] {artifact?.name}
+                </h3>
+                {renderArtifacts(artifact?.typeId!)}
+              </div>
               <button
-                className="bg-[#FF8E8E] text-white px-4 py-2 rounded"
-                onClick={() => setShowModal(false)}
+                className="text-white bg-blue-500 rounded-full w-8 h-8 flex items-center justify-center"
+                onClick={() => {
+                  setSelectedTypeId(artifact?.typeId!);
+                  setShowModal(true);
+                }}
               >
-                취소
-              </button>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={handleCreateArtifact}
-              >
-                생성
+                +
               </button>
             </div>
-          </div>
+          ))}
+          {showModal && selectedArtifactId && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-8 rounded-lg">
+                <h2 className="text-2xl mb-4">이미지 업로드</h2>
+                <input
+                  type="file"
+                  multiple
+                  onChange={(e) =>
+                    setSelectedImageFiles(
+                      e.target.files ? Array.from(e.target.files) : []
+                    )
+                  }
+                  className="w-full p-2 mb-4 border rounded text-[#000000]"
+                />
+                <div className="flex justify-end space-x-4">
+                  <button
+                    className="bg-[#FF8E8E] text-white px-4 py-2 rounded"
+                    onClick={() => {
+                      setShowModal(false);
+                      setSelectedArtifactId(null);
+                    }}
+                  >
+                    취소
+                  </button>
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={() => handleImageUpload(selectedArtifactId)}
+                  >
+                    업로드
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {showModal && !selectedArtifactId && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-8 rounded-lg">
+                <h2 className="text-2xl mb-4">새 아티팩트 생성</h2>
+                <input
+                  type="text"
+                  placeholder="제목"
+                  value={newArtifactTitle}
+                  onChange={(e) => setNewArtifactTitle(e.target.value)}
+                  className="w-full p-2 mb-4 border rounded text-[#000000]"
+                />
+                <input
+                  type="text"
+                  placeholder="부제목"
+                  value={newArtifactSubtitle}
+                  onChange={(e) => setNewArtifactSubtitle(e.target.value)}
+                  className="w-full p-2 mb-4 border rounded text-[#000000]"
+                />
+                <input
+                  type="date"
+                  placeholder="마감일"
+                  value={newArtifactDeadline}
+                  onChange={(e) => setNewArtifactDeadline(e.target.value)}
+                  className="w-full p-2 mb-4 border rounded text-[#000000]"
+                />
+                <textarea
+                  placeholder="작성자 ID들 (쉼표로 구분)"
+                  value={newWriterIds.join(",")}
+                  onChange={(e) =>
+                    setNewWriterIds(e.target.value.split(",").map(Number))
+                  }
+                  className="w-full p-2 mb-4 border rounded text-[#000000]"
+                ></textarea>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    className="bg-[#FF8E8E] text-white px-4 py-2 rounded"
+                    onClick={() => setShowModal(false)}
+                  >
+                    취소
+                  </button>
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={handleCreateArtifact}
+                  >
+                    생성
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
-    </div></div>
   );
 };
 
