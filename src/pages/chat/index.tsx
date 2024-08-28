@@ -13,7 +13,7 @@ const ChatBot: React.FC = () => {
   // 추가: 사용자 정보
   const [name, setName] = useState<string>("민주");
   const [role, setRole] = useState<string>("front");
-  const [step, setStep] = useState<string>("Database Optimization");
+  const [step, setStep] = useState<string>("회원가입 시 ERD 수정");
 
   const addBotMessage = (message: string) => {
     setMessages((prevMessages) => [
