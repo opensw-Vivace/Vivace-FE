@@ -3,17 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "5.18.0",
+    "@prisma/client": "^5.18.0",
     "@supabase/supabase-js": "^2.45.2",
     "axios": "^1.7.4",
     "next": "14.2.5",
-    "pnpm": "^9.8.0",
+    "pnpm": "^9.9.0",
     "react": "^18",
     "react-dom": "^18",
     "universal-cookie": "^7.2.0"

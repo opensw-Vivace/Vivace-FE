@@ -1,6 +1,6 @@
 const TopBar = () => {
   return (
-    <div>
+    <div className="w-full h-[96px]">
       <div></div>
     </div>
   );
