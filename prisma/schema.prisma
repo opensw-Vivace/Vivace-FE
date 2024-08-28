@@ -12,4 +12,5 @@ model Prompt {
   id      String  @id @default(uuid())
   role    String
   content String
+  version Int    @default(1)
 }
