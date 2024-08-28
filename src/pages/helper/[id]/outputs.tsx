@@ -141,11 +141,11 @@ const ProjectArtifacts = () => {
     return existingArtifacts
       .filter((artifact) => artifact.artifactTypeId === artifactTypeId)
       .map((artifact) => (
-        <div key={artifact.id} className="bg-gray-800 p-4 rounded-lg mb-4">
-          <h3 className="text-white font-bold">{artifact.title}</h3>
-          <p className="text-gray-400">Subtitle: {artifact.subtitle}</p>
-          <p className="text-gray-400">Deadline: {artifact.deadline}</p>
-          <div className="flex space-x-2">
+        <div key={artifact.id} className="bg-gray-800 p-4 rounded-lg mb-4 w-full">
+          <div className="flex justify-between mb-[10px]"><h3 className="text-white font-bold">{artifact.title}</h3>
+          <p className="text-gray-400">{artifact.deadline}</p></div>
+          <p className="text-gray-400">{artifact.subtitle}</p>
+          <div className="flex space-x-2 mt-[10px]">
             {artifact.imgPathList.map((imgPath, index) => (
               <img
                 key={index}
@@ -168,10 +168,10 @@ const ProjectArtifacts = () => {
       {matchedArtifacts.map((artifact) => (
         <div
           key={artifact?.typeId}
-          className="flex justify-between items-center"
+          className="flex justify-between gap-[50px] items-center"
         >
-          <div>
-            <h3 className="text-white font-bold">
+          <div className="w-full">
+            <h3 className="text-white font-bold mb-[10px]">
               {artifact?.name} ({artifact?.typeName})
             </h3>
             {renderArtifacts(artifact?.typeId!)}
