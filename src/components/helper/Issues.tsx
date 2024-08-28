@@ -33,7 +33,7 @@ const Issues = ({ id }: IssuesProps) => {
             },
           }
         );
-        setIssueData(response.data.list);
+        setIssueData(response.data);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -52,7 +52,8 @@ const Issues = ({ id }: IssuesProps) => {
         {
           title: newIssueTitle,
           content: newIssueContent,
-          project_id: id,
+          status: "NOT_STARTED",
+          projectId: id,
         },
         {
           headers: {
@@ -82,10 +83,20 @@ const Issues = ({ id }: IssuesProps) => {
           },
         }
       );
-      setIssueData(response.data.list);
+      setIssueData(response.data);
     } catch (error) {
       console.error("Error fetching data", error);
     }
+  };
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   const renderIssuesByStatus = (status: string) => {
@@ -93,10 +104,15 @@ const Issues = ({ id }: IssuesProps) => {
     return issueData
       .filter((issue) => issue.status === status)
       .map((issue) => (
-        <div key={issue.id} className="bg-gray-800 p-4 rounded-lg mb-4">
-          <h3 className="text-white font-bold">{issue.title}</h3>
-          <p className="text-gray-400">By: {issue.name}</p>
-          <p className="text-gray-400">Created: {issue.created_at}</p>
+        <div
+          key={issue.id}
+          className="relative bg-gray-800 p-4 rounded-lg mb-4"
+        >
+          <h3 className="text-white font-bold mb-[30px]">{issue.title}</h3>
+          <p className="text-gray-400 text-[15px] absolute  top-4 right-4">
+            {formatDate(issue.created_at)}
+          </p>
+          <p className="text-gray-400 absolute bottom-4">{issue.name}</p>
         </div>
       ));
   };
