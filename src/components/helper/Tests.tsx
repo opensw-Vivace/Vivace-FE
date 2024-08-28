@@ -5,17 +5,16 @@ import Cookies from "universal-cookie";
 interface Test {
   id: number;
   title: string;
-  description: string;
-  status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  name: string;
   created_at: string;
 }
-
 interface TestsProps {
   id: string | string[];
 }
 
 const Tests = ({ id }: TestsProps) => {
-  const [testData, setTestData] = useState<Test[]>([]);
+  const [notStartedTests, setNotStartedTests] = useState<Test[]>([]);
+  const [completedTests, setCompletedTests] = useState<Test[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [newTestTitle, setNewTestTitle] = useState("");
   const [newTestContent, setNewTestContent] = useState("");
@@ -33,7 +32,8 @@ const Tests = ({ id }: TestsProps) => {
             },
           }
         );
-        setTestData(response.data.testlist); // Assuming the API returns a testlist
+        setNotStartedTests(response.data.notStartedTestList);
+        setCompletedTests(response.data.completedTestList);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -82,23 +82,34 @@ const Tests = ({ id }: TestsProps) => {
           },
         }
       );
-      setTestData(response.data.testlist); // Assuming the API returns a testlist
+      setNotStartedTests(response.data.notStartedTestList);
+      setCompletedTests(response.data.completedTestList);
     } catch (error) {
       console.error("Error fetching data", error);
     }
   };
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
-  const renderTestsByStatus = (status: string) => {
-    if (!testData) return;
-    return testData
-      .filter((test) => test.status === status)
-      .map((test) => (
-        <div key={test.id} className="bg-gray-800 p-4 rounded-lg mb-4">
-          <h3 className="text-white font-bold">{test.title}</h3>
-          <p className="text-gray-400">Created: {test.created_at}</p>
-          <p className="text-gray-400">{test.description}</p>
-        </div>
-      ));
+  const renderTests = (tests: Test[]) => {
+    if (!tests) return;
+    return tests.map((test) => (
+      <div key={test.id} className="relative bg-gray-800 p-4 rounded-lg mb-4">
+        <h3 className="text-white font-bold mb-[30px]">{test.title}</h3>
+        <p className="text-gray-400 text-[15px] absolute  top-4 right-4">
+          {formatDate(test.created_at)}
+        </p>
+        <p className="text-gray-400 absolute bottom-4">{test.name}</p>
+      </div>
+    ));
   };
 
   return (
@@ -113,12 +124,12 @@ const Tests = ({ id }: TestsProps) => {
             +
           </button>
         </div>
-        {renderTestsByStatus("NOT_STARTED")}
+        {renderTests(notStartedTests)}
       </div>
 
       <div className="w-1/2">
         <h2 className="text-white font-bold mb-4">테스트 통과</h2>
-        {renderTestsByStatus("COMPLETED")}
+        {renderTests(completedTests)}
       </div>
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
