@@ -33,7 +33,7 @@ const Todos = ({ id }: TodosProps) => {
             },
           }
         );
-        setTodoData(response.data.todolist);
+        setTodoData(response.data);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -53,7 +53,7 @@ const Todos = ({ id }: TodosProps) => {
           title: newTodoTitle,
           content: newTodoContent,
           status: "NOT_STARTED",
-          project_id: id,
+          projectId: id,
         },
         {
           headers: {
@@ -83,7 +83,7 @@ const Todos = ({ id }: TodosProps) => {
           },
         }
       );
-      setTodoData(response.data.todolist);
+      setTodoData(response.data);
     } catch (error) {
       console.error("Error fetching data", error);
     }
@@ -96,8 +96,6 @@ const Todos = ({ id }: TodosProps) => {
       .map((todo) => (
         <div key={todo.id} className="bg-gray-800 p-4 rounded-lg mb-4">
           <h3 className="text-white font-bold">{todo.title}</h3>
-          <p className="text-gray-400">Created: {todo.created_at}</p>
-          <p className="text-gray-400">{todo.description}</p>
         </div>
       ));
   };
