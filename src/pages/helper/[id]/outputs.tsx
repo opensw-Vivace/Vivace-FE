@@ -1,3 +1,5 @@
+import LeftSide from "@/components/LeftSide";
+import TopBar from "@/components/TopBar";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -158,7 +160,11 @@ const ProjectArtifacts = () => {
   };
 
   return (
-    <div className="flex flex-col w-full gap-4 px-[10px]">
+    <div className="flex w-full">
+      <LeftSide />
+      <div className="flex flex-col w-full text-[#ffffff]">
+        <TopBar />
+    <div className="flex flex-col w-full gap-4 px-[30px]">
       {matchedArtifacts.map((artifact) => (
         <div
           key={artifact?.typeId}
@@ -238,6 +244,7 @@ const ProjectArtifacts = () => {
         </div>
       )}
     </div>
+    </div></div>
   );
 };
 
