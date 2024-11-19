@@ -15,6 +15,9 @@ export default async function handler(
   // 역할에 맞는 프롬프팅 불러오기
   const prompt = await prisma.prompt.findFirst({
     where: { role },
+    orderBy: {
+      version: 'desc',
+    },
   });
 
   if (!prompt) {
